@@ -5,6 +5,16 @@ import time
 #from config import config
 #from sqlcommands import sqlcreate, sqldrop, sqlselect, sqlinsert
 
+def clear_sides(line):
+	i = 0
+	line = list(line)
+	while ((line[i] == ' ')|(line[i] == "'")|(line[i] == '"')|(line[i] == '\n')):
+		line.pop(i)
+	i = -1	
+	while ((line[i] == ' ')|(line[i] == "'")|(line[i] == '"')|(line[i] == '\n')):
+		line.pop(i)
+	line = "".join(line)
+	return line
 
 def import_to_db(year, db, test_fall_chance = 0):
 	with open("log.txt") as log_file:
@@ -28,31 +38,29 @@ def import_to_db(year, db, test_fall_chance = 0):
 		while (n < cluster_num*50):
 			n += 1
 			csvfile.readline()
-		for line in csvfile:
-			arg_lst = []
-			line = line.split(";")
-			OutID = (str(line[0].replace('"','')))
-			arg_lst.append(OutID)
-			for i in range(1, len(line)):
-				line[i] = line[i].replace("'","’")
-				if ((line[i][0] == '"')&((line[i][-1] == '"'))):
-					line[i] = ("'" + line[i][1:-1] + "'")
-				else:
-					line[i] = line[i].replace('"',"'")
-					line[i] = line[i].replace(",",".")
-				arg_lst.append(line[i])
-			arg_lst.append(year)
+			for line in csvfile:
+				arg_lst = []
+				line = line.split(";")
+				OutID = (str(line[0].replace('"','')))
+				arg_lst.append(OutID)
+				for i in range(1, len(line)):
+					line[i] = clear_sides(line[i])
+					try:
+						line[i] = float(line[i])
+					except:
+						line[i] = line[i].replace("'","’")					
+					arg_lst.append(line[i])
+				arg_lst.append(year)
+				pprint(arg_lst)
+				participant_info = dict(zip(header, arg_lst))
+				pprint(participant_info)
+				log_file = open("log.txt", "w")
+				log_file.write(str(cluster_num) + ";" + year)
+				log_file.close()
 
-			# Додавання запису
-			participant_info = dict(zip(header, arg_lst))
-			result=db.participant_info.insert_one(participant_info)
-
-			log_file = open("log.txt", "w")
-			log_file.write(str(cluster_num) + ";" + year)
-			log_file.close()
 
 			n+=1
-			if(n==100):
+			if(n==1):
 				break
 			'''if ((n > 0)&((n % 50) == 0)):
 				try:
@@ -91,13 +99,13 @@ except FileNotFoundError:
 
 years = ['2019', '2020']
 
-'''test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
+test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
 if (test_fall == "y"):
 	test_fall_chance = int(input("Пожалуйста введите n (вероятность падения базы данных после анализа строчки - 1/n): "))
 else:
 	test_fall_chance = 0
 # Підключення
-params = config()
+'''params = config()
 conn = psycopg2.connect(**params)
 cur = conn.cursor()'''
 client = MongoClient("mongodb://localhost:27017")
@@ -108,7 +116,7 @@ if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
 	if (drop == "y"):'''
 		# Видалення таблиці
-coll = db.participant_info
+coll = ZNO_data["participant_info"]
 coll.drop()
 # Створення таблиці
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
@@ -152,16 +160,3 @@ with open("Result.csv", "w") as result_f:
 		result_f.write("\n")
 		result_f.write(item)
 print("Запись завершена")'''
-
-
-
-
-
-# Підключення
-'''client = MongoClient("mongodb://localhost:27017")'''
-# Перевірка на існування таблиці
-''''''
-# Видалення таблиці
-''''''
-# Створення таблиці
-'''db=client.ZNO_results'''
