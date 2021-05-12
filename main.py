@@ -1,9 +1,9 @@
 from pymongo import MongoClient
-import psycopg2
+#import psycopg2
 import random
 import time
-from config import config
-from sqlcommands import sqlcreate, sqldrop, sqlselect, sqlinsert
+#from config import config
+#from sqlcommands import sqlcreate, sqldrop, sqlselect, sqlinsert
 
 
 def import_to_db(year, db, test_fall_chance = 0):
@@ -31,7 +31,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 		for line in csvfile:
 			arg_lst = []
 			line = line.split(";")
-			OutID = ("'" + str(line[0].replace('"','')) + "_" + year + "'")
+			OutID = (str(line[0].replace('"','')))
 			arg_lst.append(OutID)
 			for i in range(1, len(line)):
 				line[i] = line[i].replace("'","’")
@@ -104,14 +104,15 @@ db=client.ZNO_data
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
 if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
-	if (drop == "y"):
+	if (drop == "y"):'''
 		# Видалення таблиці
-		cur = sqldrop(cur)
+coll = ZNO_data["participant_info"]
+coll.drop()
 # Створення таблиці
-cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
+'''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
 if (not (cur.fetchone()[0])):
-	cur = sqlcreate(cur)
-'''
+	cur = sqlcreate(cur)'''
+
 for year in years:
 	import_to_db(year, db)
 
