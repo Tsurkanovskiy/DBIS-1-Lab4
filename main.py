@@ -52,6 +52,8 @@ def import_to_db(year, db, test_fall_chance = 0):
 			log_file.close()
 
 			n+=1
+			if(n==100):
+				break
 			'''if ((n > 0)&((n % 50) == 0)):
 				try:
 					# Коміт (Не буде потрібний)
@@ -119,6 +121,13 @@ for year in years:
 open("log.txt","w").close()
 print("Загрузка завершена")
 
+
+phys_avg = db.participant_info.aggregate([
+   { $match: { physTestStatus: "'Зараховано'" } },
+   { $group: { region: "$physPTRegName", year: "$year", ball: { $avg: "$physBall100" } } }
+])
+print(phys_avg)
+print(phys_avg[0])
 '''select_list = []
 cur = sqlselect(cur)
 result = cur.fetchone()
