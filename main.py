@@ -91,13 +91,13 @@ except FileNotFoundError:
 
 years = ['2019', '2020']
 
-test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
+'''test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
 if (test_fall == "y"):
 	test_fall_chance = int(input("Пожалуйста введите n (вероятность падения базы данных после анализа строчки - 1/n): "))
 else:
 	test_fall_chance = 0
 # Підключення
-'''params = config()
+params = config()
 conn = psycopg2.connect(**params)
 cur = conn.cursor()'''
 client = MongoClient("mongodb://localhost:27017")
@@ -108,7 +108,7 @@ if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
 	if (drop == "y"):'''
 		# Видалення таблиці
-coll = ZNO_data["participant_info"]
+coll = db.participant_info
 coll.drop()
 # Створення таблиці
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
@@ -123,10 +123,13 @@ print("Загрузка завершена")
 
 
 phys_avg = db.participant_info.aggregate([
-   { $match: { physTestStatus: "'Зараховано'" } },
-   { $group: { region: "$physPTRegName", year: "$year", ball: { $avg: "$physBall100" } } }
+   { "$match": { "physTestStatus": "'Зараховано'" } },
+   { "$group": { '_id': "$physPTRegName", "year": {"$first":"$year"}, "ball": { "$avg": "$physBall100" } } }
 ])
 print(phys_avg)
+phys_avg = list(phys_avg)
+print(phys_avg)
+
 print(phys_avg[0])
 '''select_list = []
 cur = sqlselect(cur)
@@ -139,12 +142,10 @@ while (result != None):
 			(select_list[-1]).append(result[1])
 		else:
 			select_list.append(list(result)[:2])
-
 cur.close()
 conn.commit()
 conn.close()
 csv_data = [";".join([str(y) for y in x]) for x in select_list]
-
 with open("Result.csv", "w") as result_f:
 	result_f.write("Регіон;Найнижчий бал в 2019;Найнижчий бал в 2020")
 	for item in csv_data:
