@@ -43,7 +43,8 @@ def import_to_db(year, db, test_fall_chance = 0):
 			for i in range(1, len(line)):
 				line[i] = clear_sides(line[i])
 				try:
-					line[i] = float(line[i])
+					to_float = line[i].replace(",",".")
+					line[i] = float(to_float)
 				except:
 					line[i] = line[i].replace("'","’")					
 				arg_lst.append(line[i])
