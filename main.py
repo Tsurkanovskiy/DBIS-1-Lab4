@@ -99,13 +99,13 @@ except FileNotFoundError:
 
 years = ['2019', '2020']
 
-test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
+'''test_fall = input("Желеете протестировать сценарий 'падения' базы данных? (y/n)")
 if (test_fall == "y"):
 	test_fall_chance = int(input("Пожалуйста введите n (вероятность падения базы данных после анализа строчки - 1/n): "))
 else:
 	test_fall_chance = 0
 # Підключення
-'''params = config()
+params = config()
 conn = psycopg2.connect(**params)
 cur = conn.cursor()'''
 client = MongoClient("mongodb://localhost:27017")
@@ -116,7 +116,7 @@ if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
 	if (drop == "y"):'''
 		# Видалення таблиці
-coll = ZNO_data["participant_info"]
+coll = db.participant_info
 coll.drop()
 # Створення таблиці
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
