@@ -35,33 +35,28 @@ def import_to_db(year, db, test_fall_chance = 0):
 		header = header.split(";")
 
 		n = 0
-		while (n < cluster_num*50):
-			n += 1
-			csvfile.readline()
-			for line in csvfile:
-				arg_lst = []
-				line = line.split(";")
-				OutID = (str(line[0].replace('"','')))
-				arg_lst.append(OutID)
-				for i in range(1, len(line)):
-					line[i] = clear_sides(line[i])
-					try:
-						line[i] = float(line[i])
-					except:
-						line[i] = line[i].replace("'","’")					
-					arg_lst.append(line[i])
-				arg_lst.append(year)
-				pprint(arg_lst)
-				participant_info = dict(zip(header, arg_lst))
-				pprint(participant_info)
-				log_file = open("log.txt", "w")
-				log_file.write(str(cluster_num) + ";" + year)
-				log_file.close()
-
-
+		for line in csvfile:
+			arg_lst = []
+			line = line.split(";")
+			OutID = (str(line[0].replace('"','')))
+			arg_lst.append(OutID)
+			for i in range(1, len(line)):
+				line[i] = clear_sides(line[i])
+				try:
+					line[i] = float(line[i])
+				except:
+					line[i] = line[i].replace("'","’")					
+				arg_lst.append(line[i])
+			arg_lst.append(year)
+			
+			participant_info = dict(zip(header, arg_lst))
+			result=db.participant_info.insert_one(participant_info)
+			log_file = open("log.txt", "w")
+			log_file.write(str(cluster_num) + ";" + year)
+			log_file.close()
 			n+=1
-			if(n==1):
-				break
+			if(n==100):
+			    break
 			'''if ((n > 0)&((n % 50) == 0)):
 				try:
 					# Коміт (Не буде потрібний)
@@ -116,8 +111,8 @@ if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
 	if (drop == "y"):'''
 		# Видалення таблиці
-coll = db.participant_info
-coll.drop()
+#coll = db.participant_info
+#coll.drop()
 # Створення таблиці
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
 if (not (cur.fetchone()[0])):
@@ -131,7 +126,7 @@ print("Загрузка завершена")
 
 
 phys_avg = db.participant_info.aggregate([
-   { "$match": { "physTestStatus": "'Зараховано'" } },
+   { "$match": { "physTestStatus": "Зараховано" } },
    { "$group": { '_id': "$physPTRegName", "year": {"$first":"$year"}, "ball": { "$avg": "$physBall100" } } }
 ])
 print(phys_avg)
