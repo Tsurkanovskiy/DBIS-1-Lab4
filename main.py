@@ -136,16 +136,19 @@ regions = list(regions)
 for i in range(len(regions)):
 	regions[i] = regions[i]["_id"]
 
-print(regions)
 
 phys_avg_result = dict(zip(regions, [[] for i in regions]))
-print(phys_avg_result)
+
 
 for year in years:
 	phys_avg = db.participant_info.aggregate([
 	   { "$match": { "physTestStatus": "Зараховано",  "year": year} },
 	   { "$group": { '_id': "$physPTRegName", "ball": { "$avg": "$physBall100" } } }
 	])
+	phys_avg = list(phys_avg)
+	for doc in phys_avg:
+		phys_avg_result[doc['_id']].append(doc['ball'])
+	print(phys_avg_result)
 
 
 
