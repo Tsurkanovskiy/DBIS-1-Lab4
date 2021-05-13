@@ -9,6 +9,9 @@ import time
 
 from pprint import pprint
 
+class customConnectionError(Exception):
+	pass
+
 def clear_sides(line):
 	i = 0
 	line = list(line)
@@ -79,8 +82,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 			if(n==1000):
 			    break
 			if (random.randint(0, test_fall_chance) == 1):
-				print("Потеряно соединение с базой данных")
-				raise customConnectionError('oops')
+				raise customConnectionError('Потеряно соединение с базой данных')
 		duration = round((float(time.time()) - duration), 4)
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
