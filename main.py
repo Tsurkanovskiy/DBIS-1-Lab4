@@ -126,7 +126,7 @@ open("log.txt","w").close()
 print("Загрузка завершена")
 
 regions = db.participant_info.aggregate([
-	{ "$match": { "physPTRegName": {"$not": {"$gt":"null"}} } },
+	{ "$match": { "physPTRegName": {"$not": '"null"'} } },
 	{ "$group": { '_id': "$physPTRegName"} }
 ])
 
