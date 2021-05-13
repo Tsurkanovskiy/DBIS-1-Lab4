@@ -129,7 +129,13 @@ regions = db.participant_info.aggregate([
    { "$group": { '_id': "$physPTRegName"} }
 ])
 
-print(list(regions))
+
+regions = list(regions)
+for record in regions:
+	record = record["_id"]
+
+print(regions)
+
 phys_avg_result = dict(zip())
 
 phys_avg = db.participant_info.aggregate([
