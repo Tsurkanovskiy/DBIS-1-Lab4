@@ -4,13 +4,32 @@
 from pymongo import MongoClient
 import random
 import time
-#from config import config
+from configparser import ConfigParser
 
 
 from pprint import pprint
 
 class customConnectionError(Exception):
 	pass
+
+def config(filename='database.ini', section='mongodb'):
+    parser = ConfigParser()
+    parser.read(filename)
+
+    db = {}
+    if parser.has_section(section):
+        params = parser.items(section)
+        for param in params:
+            db[param[0]] = param[1]
+        if ((db['user'] == 'none')|(db['password'] == 'none')):
+        	conection_string = "mongodb://{0}:{1}".format(db['host'], db['port'])
+        	print(conection_string)
+        else:
+        	conection_string = "mongodb://{0}:{1}@{2}:{3}".format(db['user'], db['password'], db['host'], db['port'])
+    else:
+        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+
+    return conection_string
 
 def clear_sides(line):
 	i = 0
@@ -106,6 +125,8 @@ if (test_fall == "y"):
 	test_fall_chance = int(input("Пожалуйста введите n (вероятность падения базы данных после анализа строчки - 1/n): "))
 else:
 	test_fall_chance = 0
+
+conection_string = config()
 client = MongoClient("mongodb://localhost:27017")
 db=client.ZNO_data
 
