@@ -141,14 +141,14 @@ phys_avg_result = dict(zip(regions, [[] for i in regions]))
 print(phys_avg_result)
 
 phys_avg = db.participant_info.aggregate([
-   { "$match": { "physTestStatus": "Зараховано" } },
-   { "$group": { '_id': "$physPTRegName", "year": {"$first":"$year"}, "ball": { "$avg": "$physBall100" } } }
+   { "$match": { "physTestStatus": "Зараховано",  "year": "2020"} },
+   { "$group": { '_id': "$physPTRegName", "ball": { "$avg": "$physBall100" } } }
 ])
-#print(phys_avg)
-#phys_avg = list(phys_avg)
-#print(phys_avg)
 
-#print(phys_avg[0])
+phys_avg = list(phys_avg)
+print(phys_avg)
+
+print(phys_avg[0])
 
 
 
