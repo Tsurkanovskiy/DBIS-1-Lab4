@@ -126,13 +126,14 @@ open("log.txt","w").close()
 print("Загрузка завершена")
 
 regions = db.participant_info.aggregate([
-   { "$group": { '_id': "$physPTRegName"} }
+	{ "$match": { "physPTRegName": {"$not": "null"} } },
+	{ "$group": { '_id': "$physPTRegName"} }
 ])
 
 
 regions = list(regions)
-for record in regions:
-	record = record["_id"]
+for i in range(len(regions)):
+	regions[i] = regions[i]["_id"]
 
 print(regions)
 
