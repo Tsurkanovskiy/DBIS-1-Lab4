@@ -30,7 +30,7 @@ def import_to_db(year, db, client, test_fall_chance = 0):
 			if (int(year)<int(line[1])):
 				return 1
 			elif(year)>int(line[1]):
-                                line_num = 0
+				line_num = 0
 			else:
 				line_num = int(line[0])
 	duration = float(time.time())
