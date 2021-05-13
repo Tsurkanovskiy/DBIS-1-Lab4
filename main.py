@@ -1,5 +1,5 @@
 # Lines in the first file - 353814
-# Lines in the second file - 
+# Lines in the second file - 379300
 
 from pymongo import MongoClient
 import random
@@ -29,7 +29,7 @@ def import_to_db(year, db, client, test_fall_chance = 0):
 			line = log.split(";")
 			if (int(year)<int(line[1])):
 				return 1
-			elif(year)>int(line[1]):
+			elif(int(year)>int(line[1])):
 				line_num = 0
 			else:
 				line_num = int(line[0])
@@ -127,7 +127,7 @@ regions = db.participant_info.aggregate([
 	{ "$group": { '_id': "$physPTRegName"} }
 ])
 
-print(db.participant_info.find().count())
+print(db.participant_info.count_documents)
 
 regions = list(regions)
 for i in range(len(regions)):
