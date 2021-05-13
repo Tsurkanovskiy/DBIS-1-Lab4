@@ -42,18 +42,19 @@ def clear_sides(line):
 	return line
 
 def import_to_db(year, db, test_fall_chance = 0):
+	files_lenght = 0
 	with open("log.txt") as log_file:
 		log = log_file.readline()
 		if (log == ""):
 			line_num = 0
 		else:
 			line = log.split(";")
-			if (int(year)<int(line[1])):
+			if (int(year)<=int(line[1])):
 				return 1
-			elif(int(year)>int(line[1])):
-				line_num = 0
 			else:
-				line_num = int(line[0])
+				records_num = (db.participant_info.count_documents({}))
+				files_lenght = int(line[0])
+				line_num = (records_num - files_lenght)
 	duration = float(time.time())
 	with open('Odata' + year + 'File.csv') as csvfile:
 		header = csvfile.readline()
@@ -82,26 +83,19 @@ def import_to_db(year, db, test_fall_chance = 0):
 			arg_lst.append(year)
 			
 			participant_info = dict(zip(header, arg_lst))
-			n+=1
-			log_file = open("log.txt", "w")
-			log_file.write(str(n) + ";" + year)
-			log_file.close()
-			
-			
+			n+=1			
 
-			try:
-				result = db.participant_info.insert_one(participant_info)
-			except:
-				log_file = open("log.txt", "w")
-				log_file.write(str(n - 1) + ";" + year)
-				log_file.close()
+			result = db.participant_info.insert_one(participant_info)
 
 			if (random.randint(0, test_fall_chance) == 1):
 				raise customConnectionError('Потеряно соединение с базой данных')
 		duration = round((float(time.time()) - duration), 4)
+		log_file = open("log.txt", "w")
+		log_file.write(str(n + records_num) + ";" + year)
+		log_file.close()
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
-	return 0	
+	return 0
 
 
 
