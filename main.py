@@ -23,7 +23,6 @@ def config(filename='database.ini', section='mongodb'):
             db[param[0]] = param[1]
         if ((db['user'] == 'none')|(db['password'] == 'none')):
         	conection_string = "mongodb://{0}:{1}".format(db['host'], db['port'])
-        	print(conection_string)
         else:
         	conection_string = "mongodb://{0}:{1}@{2}:{3}".format(db['user'], db['password'], db['host'], db['port'])
     else:
@@ -64,7 +63,6 @@ def import_to_db(year, db, test_fall_chance = 0):
 		header.append("year")
 
 		n = 0
-		print(line_num)
 		while n < line_num:
 			n += 1
 			csvfile.readline()
@@ -98,8 +96,6 @@ def import_to_db(year, db, test_fall_chance = 0):
 				log_file.write(str(n - 1) + ";" + year)
 				log_file.close()
 
-			if(n==1000):
-			    break
 			if (random.randint(0, test_fall_chance) == 1):
 				raise customConnectionError('Потеряно соединение с базой данных')
 		duration = round((float(time.time()) - duration), 4)
@@ -149,7 +145,9 @@ regions = db.participant_info.aggregate([
 	{ "$group": { '_id': "$physPTRegName"} }
 ])
 
-print(db.participant_info.count_documents)
+
+records_num = (db.participant_info.count_documents({}))
+print(records_num - 353814 - 379300)
 
 regions = list(regions)
 for i in range(len(regions)):
@@ -178,12 +176,9 @@ for year in years:
 
 
 csv_data = [(key + ";" + ";".join(value)) for key, value in phys_avg_result.items()]
-count_lines = len(open('Odata2020File.csv').readlines(  ))
-print(count_lines)
-'''
 with open("Result.csv", "w") as result_file:
 	result_file.write("Регіон;" + ";".join([("Середній бал по фізиці в " + year + " році") for year in years]))
 	for item in csv_data:
 		result_file.write("\n")
 		result_file.write(item)
-print("Запись завершена")'''
+print("Запись завершена")
