@@ -20,8 +20,7 @@ def clear_sides(line):
 	line = "".join(line)
 	return line
 
-def import_to_db(year, client, test_fall_chance = 0):
-	db=client.ZNO_data
+def import_to_db(year, db, test_fall_chance = 0):
 	with open("log.txt") as log_file:
 		log = log_file.readline()
 		if (log == ""):
@@ -70,19 +69,18 @@ def import_to_db(year, client, test_fall_chance = 0):
 			
 			
 
-			#try:
-			result = db.participant_info.insert_one(participant_info)
-			#except psycopg2.InterfaceError as e:
-			#except:
-			#	log_file = open("log.txt", "w")
-			#	log_file.write(str(n - 1) + ";" + year)
-			#	log_file.close()
-			#	raise e
+			try:
+				result = db.participant_info.insert_one(participant_info)
+			except:
+				log_file = open("log.txt", "w")
+				log_file.write(str(n - 1) + ";" + year)
+				log_file.close()
+
 			if(n==1000):
 			    break
 			if (random.randint(0, test_fall_chance) == 1):
 				print("Потеряно соединение с базой данных")
-				client.close()
+				raise customConnectionError('oops')
 		duration = round((float(time.time()) - duration), 4)
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
@@ -118,7 +116,7 @@ if (drop == "y"):
 
 
 for year in years:
-	import_to_db(year, db, client, test_fall_chance)
+	import_to_db(year, db, test_fall_chance)
 
 open("log.txt","w").close()
 print("Загрузка завершена")
