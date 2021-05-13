@@ -125,6 +125,12 @@ for year in years:
 open("log.txt","w").close()
 print("Загрузка завершена")
 
+regions = db.participant_info.aggregate([
+   { "$group": { '_id': "$physPTRegName"} }
+])
+
+print(list(regions))
+phys_avg_result = dict(zip())
 
 phys_avg = db.participant_info.aggregate([
    { "$match": { "physTestStatus": "Зараховано" } },
