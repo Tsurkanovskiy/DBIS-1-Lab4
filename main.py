@@ -6,7 +6,7 @@ import time
 #from sqlcommands import sqlcreate, sqldrop, sqlselect, sqlinsert
 
 
-import pprint
+from pprint import pprint
 
 def clear_sides(line):
 	i = 0
@@ -145,9 +145,10 @@ for year in years:
 	   { "$group": { '_id': "$physPTRegName", "ball": { "$avg": "$physBall100" } } }
 	])
 	phys_avg = list(phys_avg)
+	print(phys_avg)
 	for doc in phys_avg:
 		print(doc['ball'])
-		phys_avg_result[doc['_id']].append(doc['ball'])
+		phys_avg_result[doc['_id']].append(str(doc['ball']))
 	print(phys_avg_result)
 
 
@@ -159,7 +160,7 @@ for year in years:
 
 
 
-csv_data = [key, ";", ";".join([str(y) for y in x]) for key, value in phys_avg_result.items]
+csv_data = [(key + ";" + ";".join(value)) for key, value in phys_avg_result.items()]
 pprint(csv_data)
 '''
 with open("Result.csv", "w") as result_file:
