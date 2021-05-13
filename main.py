@@ -112,8 +112,8 @@ if (cur.fetchone()[0]):
 	drop = input("Желеете удалить базу данных? (y/n)")
 	if (drop == "y"):'''
 		# Видалення таблиці
-#coll = db.participant_info
-#coll.drop()
+coll = db.participant_info
+coll.drop()
 # Створення таблиці
 '''cur.execute("select exists(select * from information_schema.tables where table_name='hist_results')")
 if (not (cur.fetchone()[0])):
@@ -137,31 +137,25 @@ for i in range(len(regions)):
 
 print(regions)
 
-phys_avg_result = dict(zip())
+phys_avg_result = dict(zip(regions, [[] for i in regions]))
+print(phys_avg_result)
 
 phys_avg = db.participant_info.aggregate([
    { "$match": { "physTestStatus": "Зараховано" } },
    { "$group": { '_id': "$physPTRegName", "year": {"$first":"$year"}, "ball": { "$avg": "$physBall100" } } }
 ])
-print(phys_avg)
-phys_avg = list(phys_avg)
-print(phys_avg)
+#print(phys_avg)
+#phys_avg = list(phys_avg)
+#print(phys_avg)
 
-print(phys_avg[0])
-'''select_list = []
-cur = sqlselect(cur)
-result = cur.fetchone()
-select_list.append(list(result)[:2])
-while (result != None):
-	result = cur.fetchone()
-	if (result != None):		
-		if (result[0] == select_list[-1][0]):
-			(select_list[-1]).append(result[1])
-		else:
-			select_list.append(list(result)[:2])
-cur.close()
-conn.commit()
-conn.close()
+#print(phys_avg[0])
+
+
+
+
+
+
+'''
 csv_data = [";".join([str(y) for y in x]) for x in select_list]
 with open("Result.csv", "w") as result_f:
 	result_f.write("Регіон;Найнижчий бал в 2019;Найнижчий бал в 2020")
