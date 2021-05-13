@@ -33,6 +33,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 		header = header.replace('\n','')
 		header = header.replace('"','')
 		header = header.split(";")
+		header.append("year")
 
 		n = 0
 		for line in csvfile:
