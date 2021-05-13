@@ -158,10 +158,6 @@ print(phys_avg)
 
 
 
-
-
-
-
 '''
 csv_data = [";".join([str(y) for y in x]) for x in select_list]
 with open("Result.csv", "w") as result_f:
