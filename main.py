@@ -127,7 +127,7 @@ else:
 	test_fall_chance = 0
 
 conection_string = config()
-client = MongoClient("mongodb://localhost:27017")
+client = MongoClient(conection_string)
 db=client.ZNO_data
 
 
