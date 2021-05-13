@@ -29,6 +29,8 @@ def import_to_db(year, db, client, test_fall_chance = 0):
 			line = log.split(";")
 			if (int(year)<int(line[1])):
 				return 1
+			elif(year)>int(line[1]):
+                                line_num = 0
 			else:
 				line_num = int(line[0])
 	duration = float(time.time())
@@ -40,6 +42,7 @@ def import_to_db(year, db, client, test_fall_chance = 0):
 		header.append("year")
 
 		n = 0
+		print(line_num)
 		while n < line_num:
 			n += 1
 			csvfile.readline()
