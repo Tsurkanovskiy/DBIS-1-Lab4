@@ -20,7 +20,8 @@ def clear_sides(line):
 	line = "".join(line)
 	return line
 
-def import_to_db(year, db, client, test_fall_chance = 0):
+def import_to_db(year, client, test_fall_chance = 0):
+	db=client.ZNO_data
 	with open("log.txt") as log_file:
 		log = log_file.readline()
 		if (log == ""):
@@ -144,7 +145,6 @@ for year in years:
 	])
 	phys_avg = list(phys_avg)
 	for doc in phys_avg:
-		print(doc['ball'])
 		phys_avg_result[doc['_id']].append(str(round(doc['ball'], 3)))
 
 
