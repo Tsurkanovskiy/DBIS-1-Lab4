@@ -41,8 +41,8 @@ def import_to_db(year, db, client, test_fall_chance = 0):
 
 		n = 0
 		while n < line_num:
-                        n += 1
-                        csvfile.readline()
+			n += 1
+			csvfile.readline()
 		for line in csvfile:
 			arg_lst = []
 			line = line.split(";")
