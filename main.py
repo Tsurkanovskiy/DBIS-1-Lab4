@@ -5,6 +5,9 @@ import time
 #from config import config
 #from sqlcommands import sqlcreate, sqldrop, sqlselect, sqlinsert
 
+
+import pprint
+
 def clear_sides(line):
 	i = 0
 	line = list(line)
@@ -57,7 +60,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 			log_file.write(str(cluster_num) + ";" + year)
 			log_file.close()
 			n+=1
-			if(n==100):
+			if(n==1000):
 			    break
 			'''if ((n > 0)&((n % 50) == 0)):
 				try:
@@ -100,11 +103,7 @@ years = ['2019', '2020']
 if (test_fall == "y"):
 	test_fall_chance = int(input("Пожалуйста введите n (вероятность падения базы данных после анализа строчки - 1/n): "))
 else:
-	test_fall_chance = 0
-# Підключення
-params = config()
-conn = psycopg2.connect(**params)
-cur = conn.cursor()'''
+	test_fall_chance = 0'''
 client = MongoClient("mongodb://localhost:27017")
 db=client.ZNO_data
 # Перевірка на існування таблиці
@@ -147,22 +146,25 @@ for year in years:
 	])
 	phys_avg = list(phys_avg)
 	for doc in phys_avg:
+		print(doc['ball'])
 		phys_avg_result[doc['_id']].append(doc['ball'])
 	print(phys_avg_result)
 
 
 
-phys_avg = dict(phys_avg)
-print(phys_avg)
 
 
 
 
+
+
+
+csv_data = [key, ";", ";".join([str(y) for y in x]) for key, value in phys_avg_result.items]
+pprint(csv_data)
 '''
-csv_data = [";".join([str(y) for y in x]) for x in select_list]
-with open("Result.csv", "w") as result_f:
-	result_f.write("Регіон;Найнижчий бал в 2019;Найнижчий бал в 2020")
+with open("Result.csv", "w") as result_file:
+	result_file.write("Регіон;Найнижчий бал в 2019;Найнижчий бал в 2020")
 	for item in csv_data:
-		result_f.write("\n")
-		result_f.write(item)
+		result_file.write("\n")
+		result_file.write(item)
 print("Запись завершена")'''
