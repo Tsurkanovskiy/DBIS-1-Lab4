@@ -20,7 +20,7 @@ def clear_sides(line):
 	line = "".join(line)
 	return line
 
-def import_to_db(year, db, test_fall_chance = 0):
+def import_to_db(year, db, client, test_fall_chance = 0):
 	with open("log.txt") as log_file:
 		log = log_file.readline()
 		if (log == ""):
@@ -31,6 +31,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 				return 1
 			else:
 				line_num = int(line[0])
+				n += 1
 	duration = float(time.time())
 	with open('Odata' + year + 'File.csv') as csvfile:
 		header = csvfile.readline()
@@ -77,7 +78,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 			    break
 			if (random.randint(0, test_fall_chance) == 1):
 				print("Потеряно соединение с базой данных")
-				db.participant_info.close()
+				client.close()
 		duration = round((float(time.time()) - duration), 4)
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
@@ -109,10 +110,11 @@ drop = input("Желеете удалить базу данных? (y/n)")
 if (drop == "y"):
 	coll = db.participant_info
 	coll.drop()
+	open("log.txt","w").close()
 
 
 for year in years:
-	import_to_db(year, db, test_fall_chance)
+	import_to_db(year, db, client, test_fall_chance)
 
 open("log.txt","w").close()
 print("Загрузка завершена")
