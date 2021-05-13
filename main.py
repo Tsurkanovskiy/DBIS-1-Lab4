@@ -1,3 +1,6 @@
+# Lines in the first file - 353814
+# Lines in the second file - 
+
 from pymongo import MongoClient
 import random
 import time
@@ -18,8 +21,6 @@ def clear_sides(line):
 	return line
 
 def import_to_db(year, db, test_fall_chance = 0):
-	count_lines = len(open('Odata' + year + 'File.csv').readlines(  ))
-	print(count_lines)
 	with open("log.txt") as log_file:
 		log = log_file.readline()
 		if (log == ""):
@@ -64,19 +65,19 @@ def import_to_db(year, db, test_fall_chance = 0):
 			
 			
 
-			try:
-				result = db.participant_info.insert_one(participant_info)
+			#try:
+			result = db.participant_info.insert_one(participant_info)
 			#except psycopg2.InterfaceError as e:
-			'''except:
-				log_file = open("log.txt", "w")
-				log_file.write(str(n - 1) + ";" + year)
-				log_file.close()
-				#raise e'''
+			#except:
+			#	log_file = open("log.txt", "w")
+			#	log_file.write(str(n - 1) + ";" + year)
+			#	log_file.close()
+			#	raise e
 			if(n==1000):
 			    break
 			if (random.randint(0, test_fall_chance) == 1):
 				print("Потеряно соединение с базой данных")
-				db.close()
+				db.participant_info.close()
 		duration = round((float(time.time()) - duration), 4)
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
@@ -111,7 +112,7 @@ if (drop == "y"):
 
 
 for year in years:
-	import_to_db(year, db)
+	import_to_db(year, db, test_fall_chance)
 
 open("log.txt","w").close()
 print("Загрузка завершена")
@@ -151,6 +152,8 @@ for year in years:
 
 
 csv_data = [(key + ";" + ";".join(value)) for key, value in phys_avg_result.items()]
+count_lines = len(open('Odata2020File.csv').readlines(  ))
+print(count_lines)
 '''
 with open("Result.csv", "w") as result_file:
 	result_file.write("Регіон;" + ";".join([("Середній бал по фізиці в " + year + " році") for year in years]))
