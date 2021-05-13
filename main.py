@@ -91,7 +91,7 @@ def import_to_db(year, db, test_fall_chance = 0):
 				raise customConnectionError('Потеряно соединение с базой данных')
 		duration = round((float(time.time()) - duration), 4)
 		log_file = open("log.txt", "w")
-		log_file.write(str(n + records_num) + ";" + year)
+		log_file.write(str(n + files_lenght) + ";" + year)
 		log_file.close()
 		with open('upload_time.txt','a') as upload_time:
 			upload_time.write('Data from Odata' + year + 'File.csv uploaded in ' + str(duration) + ' seconds\n')
@@ -138,10 +138,6 @@ regions = db.participant_info.aggregate([
 	{ "$match": { "physPTRegName": {"$ne": "null"} } },
 	{ "$group": { '_id': "$physPTRegName"} }
 ])
-
-
-records_num = (db.participant_info.count_documents({}))
-print(records_num - 353814 - 379300)
 
 regions = list(regions)
 for i in range(len(regions)):
